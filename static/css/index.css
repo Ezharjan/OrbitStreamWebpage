@@ -1,0 +1,408 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+
+.footer .icon-link {
+  font-size: 25px;
+  color: #000;
+}
+
+.link-block a {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* ----------------------------------------------------------------
+   FLKD 3D Benchmark — accents, tables, figures, callouts
+   ---------------------------------------------------------------- */
+
+:root {
+  --fl-blue: #2c7bb6;
+  --fl-blue-dark: #1f4e79;
+  --kd-red: #d7191c;
+  --rule: #e2e8f0;
+}
+
+.publication-links {
+  margin-top: 1.25rem;
+}
+
+.section .title.is-3 {
+  color: var(--fl-blue-dark);
+}
+
+/* Contributions list */
+.contrib-list {
+  margin: 0 0 0 1.1rem;
+  padding: 0;
+}
+
+.contrib-list li {
+  margin-bottom: 0.6rem;
+  line-height: 1.55;
+  text-align: justify;
+}
+
+.contrib-list li::marker {
+  color: var(--fl-blue);
+  font-weight: 700;
+}
+
+/* Figure captions */
+.fig-caption {
+  font-size: 0.9rem;
+  color: #555;
+  text-align: justify;
+  line-height: 1.5;
+  margin-top: 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Result tables */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1.25rem 0 0.4rem;
+}
+
+.results-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92rem;
+  background: #fff;
+}
+
+.results-table caption {
+  caption-side: top;
+  text-align: justify;
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.results-table thead th {
+  background: #f3f6fa;
+  color: var(--fl-blue-dark);
+  font-weight: 700;
+  text-align: center;
+  padding: 9px 14px;
+  border-bottom: 2px solid var(--fl-blue);
+  white-space: nowrap;
+}
+
+.results-table tbody td {
+  padding: 8px 14px;
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+
+.results-table .t-left {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.results-table tbody tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.results-table tbody tr:hover {
+  background: #eef5fb;
+}
+
+.results-table tbody tr.baseline-row {
+  background: #f1f7f1;
+  font-weight: 600;
+}
+
+.results-table tbody tr.baseline-row td {
+  border-bottom: 1px solid #cfe0cf;
+}
+
+.results-table td.best {
+  font-weight: 700;
+  color: #1a7a3c;
+}
+
+/* Highlight the authors' own method row (e.g. "ours"). */
+.results-table tbody tr.ours {
+  background: #eaf3fb;
+  font-weight: 700;
+}
+
+.results-table tbody tr.ours:hover {
+  background: #e0eef9;
+}
+
+.results-table tbody tr.ours td {
+  border-top: 1px solid var(--fl-blue);
+  border-bottom: 1px solid var(--fl-blue);
+}
+
+.table-legend {
+  font-size: 0.8rem;
+  color: #777;
+  text-align: center;
+  margin-top: 0.35rem;
+}
+
+/* Callout box */
+.callout {
+  margin-top: 1.6rem;
+  padding: 1rem 1.25rem;
+  background: #fdecea;
+  border-left: 4px solid var(--kd-red);
+  border-radius: 6px;
+  text-align: justify;
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+
+.publication-title {}
+
+.publication-banner {
+  max-height: parent;
+
+}
+
+.publication-banner video {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  object-fit: fit;
+}
+
+.publication-header .hero-body {}
+
+.publication-title {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-authors {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+  color: #555;
+  width: fit-content;
+  font-weight: bold;
+}
+
+.publication-awards {
+  color: #ff3860;
+  width: fit-content;
+  font-weight: bolder;
+}
+
+.publication-authors {}
+
+.publication-authors a {
+  color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+  text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-banner img {}
+
+.publication-authors {
+  /*color: #4286f4;*/
+}
+
+.publication-video {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+
+  overflow: hidden;
+  border-radius: 10px !important;
+}
+
+.publication-video iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.publication-body img {}
+
+.results-carousel {
+  overflow: hidden;
+}
+
+.results-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 0;
+}
+
+.results-carousel video {
+  margin: 0;
+}
+
+
+.interpolation-panel {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.interpolation-panel .interpolation-image {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.interpolation-video-column {}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+#interpolation-image-wrapper {
+  width: 100%;
+}
+
+#interpolation-image-wrapper img {
+  border-radius: 5px;
+}
+
+/* ================================================================
+   Template engine styles (added for the config-driven renderer)
+   venue line, authors/affiliations, loading & error states,
+   poster embed, figure placeholders, bibtex copy, footer.
+   ================================================================ */
+
+.publication-venue-line {
+  color: #5a6268;
+  font-size: 1.25em;
+  font-weight: 700;
+  margin-top: 0.35rem;
+  margin-bottom: 0.25rem;
+}
+
+.publication-authors { margin-top: 0.6rem; }
+.publication-affiliations { color: #4a5568; margin-top: 0.15rem; }
+.affiliation-block { display: inline-block; }
+
+.app-loading { color: #8a94a0; padding: 4rem 0; }
+
+.config-error { background: #fff5f5; border: 1px solid #f5c2c7; color: #842029; }
+.config-error pre {
+  background: #1f2933; color: #e6edf3; padding: 0.75rem 1rem;
+  border-radius: 6px; overflow: auto; margin-top: 0.5rem;
+}
+.config-error a { color: #842029; text-decoration: underline; }
+
+/* Poster embed */
+.publication-pdf {
+  position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+  max-width: 100%; background: #f0f0f0; border-radius: 10px;
+}
+.publication-pdf iframe {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+}
+
+/* Figure placeholder shown when an image file is missing */
+.figure-placeholder {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.4rem; margin: 0 auto; padding: 2.5rem 1rem; min-height: 180px;
+  border: 2px dashed #cbd5e0; border-radius: 10px;
+  background: #f8fafc; color: #64748b;
+}
+.figure-placeholder-icon { font-size: 2rem; line-height: 1; }
+.figure-placeholder-title { font-weight: 700; color: #475569; }
+.figure-placeholder-note { font-size: 0.8rem; color: #94a3b8; word-break: break-all; }
+
+/* BibTeX copy button + toast */
+.copy-icon {
+  position: absolute; top: 10px; right: 10px; cursor: pointer;
+  width: 36px; height: 36px; fill: #c7c7c7; transition: fill 0.15s ease;
+}
+.copy-icon:hover { fill: #4a5568; }
+.copy-toast {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: #4CAF50; color: #fff; padding: 10px 14px; border-radius: 6px;
+  z-index: 9999; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer */
+.footer .footer-icons { margin-bottom: 0.5rem; }
+.footer .footer-icons 
+/* ----------------------------------------------------------------
+   Hero spacing — airier title / venue / authors / button rhythm.
+   (Appended last so it overrides the tighter defaults above.)
+   ---------------------------------------------------------------- */
+.hero-body { padding-top: 3.5rem; padding-bottom: 3.25rem; }
+
+.publication-title { line-height: 1.22; margin-bottom: 1.5rem; }
+
+.publication-venue-line { margin-top: 0.25rem; margin-bottom: 1.15rem; }
+
+.publication-authors { margin-top: 1rem; line-height: 1.6; }
+
+.publication-links {
+  margin-top: 2.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.85rem 0.9rem;
+}
+.publication-links .link-block { display: inline-flex; margin: 0; }
+.publication-links .link-block a { margin: 0; }
+
+/* ----------------------------------------------------------------
+   Section rhythm — larger, clearly distinguishable gaps between
+   major sections, and airier spacing between sub-blocks within a
+   section. Appended last so it overrides the tight defaults
+   (including render.js's inline padding-top:0 on each section).
+   ---------------------------------------------------------------- */
+.section { padding-top: 2.75rem !important; padding-bottom: 3rem; }
+
+/* Section heading (H2) gets clear space below it */
+.section .column .title.is-3 { margin-bottom: 1.75rem; }
+
+/* Sub-section heading (H3) inside a group — strong separation above */
+.section .column .title.is-4 { margin-top: 2.75rem; margin-bottom: 1rem; }
+
+/* Body text & lists breathe */
+.section .column .content { margin-top: 1.35rem; margin-bottom: 1.35rem; }
+.section .column .contrib-list { margin-top: 1.35rem; margin-bottom: 1.35rem; }
+
+/* Figures & tables: air above the block; captions/legends stay close */
+.section .column img { margin-top: 1.6rem; }
+.section .column .table-wrap { margin-top: 2rem; }
+.fig-caption { margin-top: 0.7rem; margin-bottom: 0.4rem; }
+.table-legend { margin-top: 0.5rem; margin-bottom: 0.4rem; }

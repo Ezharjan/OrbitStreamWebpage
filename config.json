@@ -1,0 +1,689 @@
+{
+  "$schema": "./config.schema.json",
+  "site": {
+    "title": "Training-Free Adaptive 360° Video Streaming via Semantic Potential Fields",
+    "venue": "ICCCN 2026",
+    "description": "OrbitStream is a training-free framework for adaptive 360° video streaming in autonomous teleoperation. It pairs Gravitational Viewport Prediction (semantic potential fields) with a saturation-based PD buffer controller, achieving 94.7% zero-shot viewport accuracy and competitive QoE without offline training.",
+    "keywords": "Adaptive Bitrate Streaming, ABR, 360 Video, Proportional-Derivative Control, Semantic Potential Fields, Viewport Prediction, Teleoperation, Quality of Experience",
+    "favicon": "favicon.ico",
+    "lang": "en",
+    "publicationDate": "2026"
+  },
+  "authors": [
+    {
+      "name": "Aizierjiang Aiersilan",
+      "url": "https://ezharjan.github.io/",
+      "_note": "*",
+      "affiliations": [
+        1
+      ]
+    },
+    {
+      "name": "Zhangfei Yang",
+      "url": "https://zhangfeiy.github.io/",
+      "affiliations": [
+        1
+      ]
+    }
+  ],
+  "_affiliations": [
+    {
+      "id": 1,
+      "name": "The George Washington University"
+    }
+  ],
+  "links": [
+    {
+      "type": "arxiv",
+      "label": "arXiv",
+      "icon": "fas fa-file-alt",
+      "url": "https://arxiv.org/abs/2603.20999",
+      "enabled": true
+    },
+    {
+      "type": "pdf",
+      "label": "Paper (PDF)",
+      "icon": "fas fa-file-pdf",
+      "url": "https://arxiv.org/pdf/2603.20999",
+      "enabled": true
+    },
+    {
+      "type": "code",
+      "label": "Code",
+      "icon": "fab fa-github",
+      "url": "https://github.com/zhangfeiy/Streaming360Video",
+      "enabled": true
+    },
+    {
+      "type": "dataset",
+      "label": "Dataset",
+      "icon": "fas fa-database",
+      "url": "https://github.com/zhangfeiy/Streaming360Video/tree/main/data",
+      "enabled": true
+    },
+    {
+      "type": "video",
+      "label": "Video",
+      "icon": "fab fa-youtube",
+      "url": "https://youtu.be/capWm8Zm1AQ",
+      "enabled": true
+    },
+    {
+      "type": "poster",
+      "label": "Poster",
+      "icon": "fas fa-image",
+      "url": "paper_poster.pdf",
+      "enabled": false
+    }
+  ],
+  "abstract": {
+    "title": "Abstract",
+    "body": "Adaptive 360° video streaming for teleoperation faces two coupled challenges: viewport prediction under uncertain gaze patterns and bitrate adaptation over fluctuating wireless channels. While Deep Reinforcement Learning (DRL) methods achieve high Quality of Experience (QoE), their lack of interpretability and dependence on offline training limit deployment in safety-critical systems. We propose <b>OrbitStream</b>, a training-free framework that formulates viewport prediction as a <i>Gravitational Viewport Prediction (GVP)</i> problem, where semantic objects generate potential fields that attract operator gaze, and employs a <i>Saturation-Based Proportional-Derivative (PD) Controller</i> for buffer regulation. On object-rich teleoperation traces, OrbitStream achieves 94.7% zero-shot viewport prediction accuracy without user-specific profiling, approaching trajectory-extrapolation baselines (∼98.5%). Across 3,600 Monte Carlo simulations, it ranks second among 12 algorithms (QoE 2.71 vs. BOLA-E's 2.80), outperforming FastMPC (1.84), with 1.01 ms decision latency and minimal rebuffering."
+  },
+  "sections": [
+    {
+      "type": "text",
+      "title": "Overview",
+      "body": "Autonomous teleoperation lets a human operator remotely supervise semi-autonomous systems — remotely driven vehicles, surgical robots, or industrial inspection platforms — through real-time 360° video feedback, intervening only when safety-critical situations arise. A central bottleneck is <b>viewport inefficiency</b>: operators view only ∼15% of the sphere, yet standard pipelines transmit the full 4K projection. Tile-based streaming prioritizes the predicted viewport but introduces two coupled problems: predicting operator gaze under non-stationary, scene-dependent patterns, and allocating bitrate across tiles under fluctuating channel conditions.<br><br><b>OrbitStream</b> combines physics-based semantic modeling with classical control theory. <i>Gravitational Viewport Prediction (GVP)</i> models detected semantic objects as potential fields that attract operator gaze, while a <i>Saturation-Based PD Controller</i> regulates the playback buffer. Here, &ldquo;training-free&rdquo; refers to the decision and control logic: unlike DRL, OrbitStream's viewport prediction and rate adaptation rely on closed-form equations with no learned parameters. The upstream object detector (YOLOv5) is a pre-trained perception module, and the downstream control layer degrades gracefully under detection errors."
+    },
+    {
+      "type": "list",
+      "title": "Contributions",
+      "ordered": true,
+      "items": [
+        "<b>Physics-Inspired Attention Modeling.</b> GVP formulated as particle dynamics governed by semantic potential fields, achieving 94.7% zero-shot viewport prediction accuracy.",
+        "<b>Lyapunov-Informed Buffer Control.</b> An adaptive PD controller with bounded saturation nonlinearity for buffer-trajectory stability.",
+        "<b>Empirical Evaluation.</b> Across 3,600 Monte Carlo simulations, OrbitStream ranks second among 12 algorithms (QoE 2.71 vs. BOLA-E's 2.80), while offering three capabilities BOLA-E lacks: (a) semantic viewport prediction that prioritizes tiles around safety-critical objects, (b) zero training overhead for deployment in new environments, and (c) interpretable decision logic traceable to closed-form equations."
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Method",
+      "blocks": [
+        {
+          "type": "subtitle",
+          "text": "Gravitational Viewport Prediction (GVP)"
+        },
+        {
+          "type": "text",
+          "body": "GVP treats visual attention as a test particle on the unit sphere under forces generated by semantic objects. Each detected object carries a <i>semantic mass</i> M ∈ [0, 1] encoding task-relevance via a vulnerability-based hierarchy: pedestrians (M=1.0, highest collision risk), vehicles (M=0.8), traffic signs (M=0.75), and background (M&lt;0.2). Objects generate potential wells whose superposition defines an attention potential U(θ, φ) over yaw–pitch space, using the haversine angular distance to handle spherical geometry across polar boundaries. Tile viewing probabilities follow a Boltzmann distribution over U for bandwidth allocation, while the central gaze trajectory is propagated by a stochastic differential equation (Euler–Maruyama discretization with momentum for eye inertia) — capturing both attraction toward salient objects and spontaneous peripheral saccades."
+        },
+        {
+          "type": "figure",
+          "image": "static/images/potential_field.png",
+          "alt": "Gravitational potential field in yaw–pitch space with vehicle and pedestrian potential wells and a gaze trajectory.",
+          "width": "60%",
+          "caption": "<b>Figure 1.</b> Viewport inefficiency in 360° streaming (inset: only ∼15% of the 4K sphere is viewed) and the gravitational potential field in yaw–pitch space. Two potential wells correspond to a Vehicle (M=0.8) and a Pedestrian (M=1.0); arrows show the inward gradient field. The red trajectory traces gaze curving past the vehicle and converging into the pedestrian's potential well."
+        },
+        {
+          "type": "subtitle",
+          "text": "PD Controller with Tanh Saturation"
+        },
+        {
+          "type": "text",
+          "body": "The rate controller targets a reference buffer B<sub>ref</sub> = 4.0 s. From the buffer error e(t) = B(t) − B<sub>ref</sub>, a PD law produces a control signal u(t) = K<sub>p</sub> e(t) + K<sub>d</sub> ė(t), with K<sub>p</sub>=0.5 and K<sub>d</sub>=0.2 (calibrated via Ziegler–Nichols). The signal is mapped to a bounded rate through hyperbolic-tangent saturation, R*(t) = Ĉ(t) · (1 + tanh(u(t))) · ρ, with safety margin ρ=0.9 and a hard cap R(t) = min(R*(t), Ĉ(t)). A buffer deficit reduces the rate to promote recovery, while a surplus pushes it toward capacity, avoiding abrupt on–off switching. A Lyapunov analysis (V(e) = ½e²) establishes practical boundedness of the buffer near B<sub>ref</sub>. The total budget is then distributed across tiles in proportion to their viewing probability (sharpened by a concentration exponent α=1.2), concentrating bitrate around safety-critical objects."
+        },
+        {
+          "type": "figure",
+          "image": "static/images/pd_controller.png",
+          "alt": "Block diagram of the nonlinear PD buffer controller with tanh saturation and buffer feedback.",
+          "width": "100%",
+          "caption": "<b>Figure 2.</b> Nonlinear PD buffer controller. The loop computes the buffer error e(t) = B(t) − B<sub>ref</sub>; the PD controller produces a correction u(t), shaped by the smooth map 1 + tanh(u(t)) to prevent aggressive bitrate switching. This factor scales the estimated throughput Ĉ(t) to derive the target bitrate R*(t)."
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Experimental Setup",
+      "blocks": [
+        {
+          "type": "text",
+          "body": "We evaluate OrbitStream via 3,600 Monte Carlo runs (300 per algorithm across 12 algorithms), randomizing initial buffer states and gaze perturbations. Network conditions use 40 traces spanning HSDPA/4G mobile (mean 6.8 Mbps, std 3.2 Mbps), broadband, and synthetic stress tests; viewport traces come from Xu et al. and Wu et al., augmented with synthetic teleoperation trajectories. Baselines span optimization-based (FastMPC, Robust-MPC, MPC-HM), DRL (Pensieve, Fugu), rule-based (BOLA-E, Buffer-Based, Rate-Based), and 360°-specific (FLARE, Pano) methods."
+        },
+        {
+          "type": "table",
+          "caption": "<b>Table 1.</b>&ensp;Experimental configuration.",
+          "columns": [
+            {
+              "header": "Category",
+              "align": "left"
+            },
+            {
+              "header": "Parameter",
+              "align": "left"
+            },
+            {
+              "header": "Value",
+              "align": "left"
+            }
+          ],
+          "rows": [
+            {
+              "cells": [
+                "Video",
+                "Resolution (equirectangular)",
+                "3840 × 1920 pixels"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Frame rate",
+                "30 fps"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Segment duration",
+                "2.0 seconds"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Tile grid",
+                "8 × 4 (32 tiles)"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Quality levels",
+                "6 (1.2M – 40.1M bps)"
+              ]
+            },
+            {
+              "cells": [
+                "Network",
+                "Trace sources",
+                "HSDPA, Pensieve, WebRTC"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Global scaling",
+                "× 0.6 (applied to trace throughput)"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Per-run scaling",
+                "s ∼ 𝒩(1, 0.15), clipped to [0.5, 2.0]"
+              ]
+            },
+            {
+              "cells": [
+                "Viewport",
+                "Field of view α<sub>FoV</sub>",
+                "80°"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Angular velocity (mean)",
+                "42.3°/s"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Angular velocity (95th %)",
+                "112.8°/s"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Trace duration",
+                "100 seconds"
+              ]
+            },
+            {
+              "cells": [
+                "Controller",
+                "Target buffer B<sub>ref</sub>",
+                "4.0 seconds"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Proportional gain K<sub>p</sub>",
+                "0.50"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Derivative gain K<sub>d</sub>",
+                "0.20"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Safety margin ρ",
+                "0.90"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Max buffer B<sub>max</sub>",
+                "10.0 seconds"
+              ]
+            },
+            {
+              "cells": [
+                "GVP Model",
+                "Saliency weighting G",
+                "1.0"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Attention temperature T<sub>att</sub>",
+                "2.0 (inverse β = 0.5)"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Momentum decay γ",
+                "0.80"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Descent rate η",
+                "0.10"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Saccade noise σ",
+                "0.05"
+              ]
+            },
+            {
+              "cells": [
+                "Simulation",
+                "Monte Carlo runs",
+                "300 per algorithm"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Total simulations",
+                "3,600 (12 algorithms)"
+              ]
+            },
+            {
+              "cells": [
+                "",
+                "Random seed",
+                "Fixed per run (reproducible)"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Results",
+      "blocks": [
+        {
+          "type": "subtitle",
+          "text": "Quality of Experience (QoE)"
+        },
+        {
+          "type": "text",
+          "body": "Aggregated over 300 Monte Carlo runs per algorithm, BOLA-E yields the highest mean QoE (2.80); <b>OrbitStream achieves 2.71</b>, outperforming FastMPC (1.84) and MPC-HM (1.67). The equivalent bitrates reflect the visual quality delivered to the viewport region, which exceeds raw channel throughput because tile-based allocation concentrates bitrate on the viewed tiles. The cumulative distribution confirms that under sub-megabit bandwidth drops, conservative safety margins prevent stalls across the leading methods, whereas aggressive methods exhibit heavier low-QoE tails."
+        },
+        {
+          "type": "figure",
+          "image": "static/images/qoe_comparison.png",
+          "alt": "Bar chart of mean QoE across twelve algorithms with error bars; OrbitStream highlighted.",
+          "width": "100%",
+          "caption": "<b>Figure 3.</b> QoE comparison across twelve algorithms (OrbitStream highlighted). Bars report mean QoE with error bars showing ±1 standard deviation."
+        },
+        {
+          "type": "figure",
+          "image": "static/images/qoe_cdf.png",
+          "alt": "Cumulative distribution functions of average raw QoE across twelve algorithms.",
+          "width": "76%",
+          "caption": "<b>Figure 4.</b> Cumulative distribution function (CDF) of average raw QoE across twelve algorithms. Aggressive methods exhibit heavier low-QoE tails, while conservative methods show more concentrated distributions."
+        },
+        {
+          "type": "table",
+          "caption": "<b>Table 2.</b>&ensp;Performance summary across twelve algorithms (300 Monte Carlo runs each, raw QoE).",
+          "columns": [
+            {
+              "header": "Algorithm",
+              "align": "left"
+            },
+            {
+              "header": "QoE (Mean ± Std)",
+              "align": "center"
+            },
+            {
+              "header": "Eqv. Bitrate (Mbps)",
+              "align": "center"
+            },
+            {
+              "header": "Mean Buffer (s)",
+              "align": "center"
+            },
+            {
+              "header": "Decision Time (ms)",
+              "align": "center"
+            }
+          ],
+          "rows": [
+            {
+              "cells": [
+                "BOLA-E",
+                {
+                  "v": "2.80 ± 0.25",
+                  "class": "best"
+                },
+                {
+                  "v": "37.49",
+                  "class": "best"
+                },
+                "5.42",
+                "0.006"
+              ]
+            },
+            {
+              "class": "ours",
+              "cells": [
+                "OrbitStream",
+                "2.71 ± 0.31",
+                "31.52",
+                "5.85",
+                "1.010"
+              ]
+            },
+            {
+              "cells": [
+                "FastMPC",
+                "1.84 ± 0.49",
+                "26.61",
+                "5.73",
+                "0.019"
+              ]
+            },
+            {
+              "cells": [
+                "MPC-HM",
+                "1.67 ± 0.48",
+                "22.92",
+                "9.13",
+                "0.030"
+              ]
+            },
+            {
+              "cells": [
+                "Robust-MPC",
+                "1.65 ± 0.60",
+                "17.11",
+                "7.31",
+                "0.033"
+              ]
+            },
+            {
+              "cells": [
+                "Fugu",
+                "1.42 ± 0.47",
+                "20.94",
+                "7.51",
+                "0.011"
+              ]
+            },
+            {
+              "cells": [
+                "Pano",
+                "1.28 ± 0.42",
+                "8.48",
+                "9.67",
+                "0.003"
+              ]
+            },
+            {
+              "cells": [
+                "MPC",
+                "1.20 ± 0.49",
+                "13.40",
+                "9.10",
+                "0.013"
+              ]
+            },
+            {
+              "cells": [
+                "Buffer-Based",
+                "1.01 ± 0.22",
+                "4.69",
+                "9.78",
+                "0.003"
+              ]
+            },
+            {
+              "cells": [
+                "Pensieve",
+                "0.97 ± 0.52",
+                "13.72",
+                "9.00",
+                "0.006"
+              ]
+            },
+            {
+              "cells": [
+                "Rate-Based",
+                "0.92 ± 0.54",
+                "7.58",
+                "9.72",
+                "0.003"
+              ]
+            },
+            {
+              "cells": [
+                "FLARE",
+                "0.83 ± 0.45",
+                "11.06",
+                "9.64",
+                "0.003"
+              ]
+            }
+          ],
+          "legend": "Across 300 runs per algorithm (raw QoE). Decision time is the per-decision control latency, excluding video codecs and object detection; rebuffering was rare across the leading methods. Best QoE and equivalent bitrate shown in green; OrbitStream (our method) highlighted in blue."
+        },
+        {
+          "type": "subtitle",
+          "text": "Buffer Stability and Latency"
+        },
+        {
+          "type": "text",
+          "body": "The PD controller maintains tight buffer regulation: σ<sub>B</sub> = 0.42 s, comparable to BOLA-E (0.39 s) and FastMPC (0.36 s), and substantially lower than Pensieve (1.84 s). The mean buffer settles at 5.85 s — above B<sub>ref</sub> = 4.0 s because the safety margin ρ=0.9 biases toward conservative rate selection — with a minimum of 4.68 s and only 3.46 bitrate switches per run. OrbitStream's average decision latency is 1.01 ms: higher than rule-based methods (∼3 μs) and MPC variants (∼13–19 μs) due to potential-field evaluation and SDE propagation, yet well within the 33 ms frame budget at 30 fps and below typical wireless round-trip times (20–50 ms)."
+        },
+        {
+          "type": "table",
+          "caption": "<b>Table 3.</b>&ensp;Buffer stability and switching dynamics (300 Monte Carlo runs per algorithm).",
+          "columns": [
+            {
+              "header": "Algorithm",
+              "align": "left"
+            },
+            {
+              "header": "Mean Buf. (s)",
+              "align": "center"
+            },
+            {
+              "header": "Std Dev (s)",
+              "align": "center"
+            },
+            {
+              "header": "Min Buf. (s)",
+              "align": "center"
+            },
+            {
+              "header": "Switches",
+              "align": "center"
+            }
+          ],
+          "rows": [
+            {
+              "cells": [
+                "Buffer-Based",
+                "9.78",
+                "0.82",
+                "5.45",
+                "2.74"
+              ]
+            },
+            {
+              "cells": [
+                "Rate-Based",
+                "9.72",
+                "0.99",
+                "4.98",
+                "6.27"
+              ]
+            },
+            {
+              "cells": [
+                "Pano",
+                "9.67",
+                "1.04",
+                "4.94",
+                "5.96"
+              ]
+            },
+            {
+              "cells": [
+                "FLARE",
+                "9.64",
+                "1.06",
+                "4.97",
+                "12.47"
+              ]
+            },
+            {
+              "cells": [
+                "MPC-HM",
+                "9.13",
+                "0.81",
+                "5.84",
+                "6.08"
+              ]
+            },
+            {
+              "cells": [
+                "MPC",
+                "9.10",
+                "1.76",
+                "4.26",
+                "8.78"
+              ]
+            },
+            {
+              "cells": [
+                "Pensieve",
+                "9.00",
+                "1.84",
+                "4.14",
+                "9.92"
+              ]
+            },
+            {
+              "cells": [
+                "Fugu",
+                "7.51",
+                "1.48",
+                "4.12",
+                "6.86"
+              ]
+            },
+            {
+              "cells": [
+                "Robust-MPC",
+                "7.31",
+                "0.90",
+                "4.69",
+                "0.92"
+              ]
+            },
+            {
+              "class": "ours",
+              "cells": [
+                "OrbitStream",
+                "5.85",
+                "0.42",
+                "4.68",
+                "3.46"
+              ]
+            },
+            {
+              "cells": [
+                "FastMPC",
+                "5.73",
+                "0.36",
+                "4.94",
+                "5.59"
+              ]
+            },
+            {
+              "cells": [
+                "BOLA-E",
+                "5.42",
+                "0.39",
+                "4.51",
+                "1.00"
+              ]
+            }
+          ],
+          "legend": "Each metric is averaged per run, then aggregated across 300 runs. OrbitStream (our method) highlighted in blue."
+        },
+        {
+          "type": "subtitle",
+          "text": "Viewport Prediction Accuracy"
+        },
+        {
+          "type": "text",
+          "body": "Accuracy is the mean percentage of frames where the predicted viewport reaches IoU ≥ 0.5 against the ground-truth gaze. OrbitStream achieves a <b>94.7%</b> zero-shot hit ratio without any training. Trajectory-extrapolation baselines reach ∼98.5% during slow linear panning but degrade on non-stationary scenes, whereas OrbitStream's semantic field anticipates newly appearing objects in peripheral regions. When 30% of objects are synthetically masked to simulate detection failures, the hit ratio drops to 82.2% — a 12.5-point reduction rather than a complete failure, because the Boltzmann distribution maintains peripheral coverage. Flattening the semantic mass (M=1 for all classes) reduces accuracy by 4.2 points, validating the vulnerability-based hierarchy."
+        },
+        {
+          "type": "text",
+          "body": "<b>Why OrbitStream?</b> Although BOLA-E achieves a slightly higher mean QoE (2.80 vs. 2.71), it operates solely on buffer occupancy with no notion of scene content, allocating equal quality whether a pedestrian or empty sky occupies a region. OrbitStream instead concentrates bitrate on safety-critical objects via GVP-driven allocation, requires no offline training and generalizes to new environments without retraining, and every decision traces to explicit closed-form equations — enabling the post-hoc auditing required in vehicular and surgical teleoperation where regulatory accountability applies."
+        }
+      ]
+    },
+    {
+      "type": "html",
+      "title": "Video",
+      "body": "<div class=\"publication-video\"><iframe src=\"https://www.youtube.com/embed/capWm8Zm1AQ?si=ThMG0iSDuTxO2pwJ\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></div>"
+    }
+  ],
+  "poster": {
+    "enabled": false,
+    "title": "Poster",
+    "file": "paper_poster.pdf"
+  },
+  "bibtex": {
+    "title": "BibTeX",
+    "entry": "@inproceedings{aiersilan2026orbitstream,\n  title         = {OrbitStream: Training-Free Adaptive 360$^\\circ$ Video Streaming via Semantic Potential Fields},\n  author        = {Aiersilan, Aizierjiang and Yang, Zhangfei},\n  booktitle     = {Proc. International Conference on Computer Communications and Networks (ICCCN)},\n  year          = {2026},\n  eprint        = {2603.20999},\n  archivePrefix = {arXiv}\n}"
+  },
+  "_footer": {
+    "showLinks": true,
+    "text": "<sup>*</sup> Corresponding author: <a href='mailto:alexandera@gwu.edu'>alexandera@gwu.edu</a> &middot; The George Washington University &middot; Accepted to ICCCN 2026."
+  }
+}
