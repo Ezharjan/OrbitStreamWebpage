@@ -680,7 +680,7 @@
   },
   "bibtex": {
     "title": "BibTeX",
-    "entry": "@inproceedings{aiersilan2026orbitstream,\n  title         = {Training-Free Adaptive 360$^\\circ$ Video Streaming via Semantic Potential Fields},\n  author        = {Aiersilan, Aizierjiang and Yang, Zhangfei},\n  booktitle     = {Proc. International Conference on Computer Communications and Networks (ICCCN)},\n  year          = {2026},\n  eprint        = {2603.20999},\n  url = https://arxiv.org/abs/2603.20999,\n  archivePrefix = {arXiv}\n}"
+    "entry": "@inproceedings{aiersilan2026orbitstream,\n  title         = {Training-Free Adaptive 360$^\\circ$ Video Streaming via Semantic Potential Fields},\n  author        = {Aiersilan, Aizierjiang and Yang, Zhangfei},\n  booktitle     = {Proc. International Conference on Computer Communications and Networks (ICCCN)},\n  year          = {2026},\n  eprint        = {2603.20999},\n  url =          https://arxiv.org/abs/2603.20999,\n  archivePrefix = {arXiv}\n}"
   },
   "_footer": {
     "showLinks": true,
